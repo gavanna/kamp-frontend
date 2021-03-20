@@ -33,11 +33,14 @@ export class ProductAddComponent implements OnInit {
     if(this.productAddForm.valid){
       let productModel = Object.assign({}, this.productAddForm.value) 
       this.productService.add(productModel).subscribe(response=>{
-        console.log(response)
         this.toastrServices.success(response.message,"Başarılı")
       },responseError=>{
-        console.log(responseError)
-        this.toastrServices.error(responseError.error)
+        if(responseError.error.Errors.length>0){
+          for (let i = 0; i < responseError.error.Errors.length; i++) {
+            this.toastrServices.error(responseError.error.Errors[i].ErrorMessage
+              ,"Doğrulama hatası")
+          }
+        }
       })
     }else{
       this.toastrServices.error("Formunuz eksik","Dikkat")
